@@ -11,6 +11,8 @@ export default class Order {
 	coupon?: Coupon;
 	freight = 0;
 	code: OrderCode;
+	distance = 0;
+	zipCode?: string;
 
 	constructor (cpf: string, date: Date = new Date(), sequence: number = 1) {
 		this.cpf = new Cpf(cpf);
@@ -18,10 +20,10 @@ export default class Order {
 		this.code = new OrderCode(date, sequence);
 	}
 
-	addItem (product: Product, quantity: number, currencyCode: string = "BRL", currencyValue: number = 1) {
+	addItem (product: Product, quantity: number, currencyCode: string = "BRL", currencyValue: number = 1, distance: number = 1000) {
 		if (this.items.some((item) => item.idProduct === product.idProduct)) throw new Error("Duplicated product");
 		this.items.push(new Item(product.idProduct, product.price, quantity, currencyCode, currencyValue));
-		this.freight += FreightCalculator.calculate(product);
+		this.freight += FreightCalculator.calculate(product, distance);
 	}
 
 	addCoupon (coupon: Coupon) {

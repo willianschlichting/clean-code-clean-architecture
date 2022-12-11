@@ -4,13 +4,15 @@ import GetOrderByCpf from "../src/application/GetOrderByCpf";
 import OrderDataDatabase from "../src/infra/data/OrderDataDatabase";
 import ProductDataDatabase from "../src/infra/data/ProductDataDatabase";
 import PgPromiseConnection from "../src/infra/database/PgPromiseConnection";
+import ZipCodeDatabase from "../src/infra/data/ZipCodeDatabase";
 
 test("Deve consultar um pedido", async function () {
 	const connection = new PgPromiseConnection();
 	const productData = new ProductDataDatabase(connection);
 	const couponData = new CouponDataDatabase(connection);
 	const orderData = new OrderDataDatabase(connection);
-	const checkout = new Checkout(productData, couponData, orderData);
+	const zipCodeData = new ZipCodeDatabase(connection);
+	const checkout = new Checkout(productData, couponData, orderData, zipCodeData);
 	const input = {
 		cpf: "987.654.321-00",
 		items: [

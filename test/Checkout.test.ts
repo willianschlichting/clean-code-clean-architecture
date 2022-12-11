@@ -1,17 +1,13 @@
 import Checkout from "../src/application/Checkout";
-import CouponData from "../src/domain/data/CouponData";
-import CouponDataDatabase from "../src/infra/data/CouponDataDatabase";
-import ProductData from "../src/domain/data/ProductData";
-import ProductDataDatabase from "../src/infra/data/ProductDataDatabase";
 import sinon from "sinon";
 import CurrencyGateway from "../src/infra/gateway/CurrencyGatewayRandom";
 import MailerConsole from "../src/infra/mailer/MailerConsole";
 import Mailer from "../src/infra/mailer/Mailer";
-import OrderData from "../src/domain/data/OrderData";
 import Currencies from "../src/domain/entities/Currencies";
 import ProductDataFake from "./fake/ProductDataFake";
 import CouponDataFake from "./fake/CouponDataFake";
 import OrderDataFake from "./fake/OrderDataFake";
+import ZipCodeDataFake from "./fake/ZipCodeDataFake";
 
 test("Deve fazer um pedido com 3 produtos", async function () {
 	const input = {
@@ -23,7 +19,7 @@ test("Deve fazer um pedido com 3 produtos", async function () {
 		]
 	};
 	
-	const checkout = new Checkout(new ProductDataFake(), new CouponDataFake(), new OrderDataFake());
+	const checkout = new Checkout(new ProductDataFake(), new CouponDataFake(), new OrderDataFake(), new ZipCodeDataFake());
 	const output = await checkout.execute(input);
 	expect(output.total).toBe(6350);
 });
@@ -45,7 +41,7 @@ test("Deve fazer um pedido com 4 produtos com moedas diferentes", async function
 		]
 	};
 	
-	const checkout = new Checkout(new ProductDataFake(), new CouponDataFake(), new OrderDataFake());
+	const checkout = new Checkout(new ProductDataFake(), new CouponDataFake(), new OrderDataFake(), new ZipCodeDataFake());
 	const output = await checkout.execute(input);
 	expect(output.total).toBe(6580);
 	// expect(mailerSpy.calledOnce).toBeTruthy();
@@ -76,7 +72,7 @@ test("Deve fazer um pedido com 4 produtos com moedas diferentes com mock", async
 			{ idProduct: 4, quantity: 1 }
 		]
 	};
-	const checkout = new Checkout(new ProductDataFake(), new CouponDataFake(), new OrderDataFake());
+	const checkout = new Checkout(new ProductDataFake(), new CouponDataFake(), new OrderDataFake(), new ZipCodeDataFake());
 	const output = await checkout.execute(input);
 	expect(output.total).toBe(6580);
 	// mailerMock.verify();
@@ -110,7 +106,7 @@ test("Deve fazer um pedido com 4 produtos com moedas diferentes com fake", async
 			log.push({ to, subject, message });
 		}
 	}
-	const checkout = new Checkout(new ProductDataFake(), new CouponDataFake(), new OrderDataFake(), currencyGateway, mailer);
+	const checkout = new Checkout(new ProductDataFake(), new CouponDataFake(), new OrderDataFake(), new ZipCodeDataFake(), currencyGateway, mailer);
 	const output = await checkout.execute(input);
 	expect(output.total).toBe(6580);
 	// expect(log).toHaveLength(1);
@@ -128,7 +124,7 @@ test("Deve fazer um pedido com 3 produtos com código do pedido", async function
 			{ idProduct: 3, quantity: 3 }
 		]
 	};
-	const checkout = new Checkout(new ProductDataFake(), new CouponDataFake(), new OrderDataFake());
+	const checkout = new Checkout(new ProductDataFake(), new CouponDataFake(), new OrderDataFake(), new ZipCodeDataFake());
 	const output = await checkout.execute(input);
 	expect(output.code).toBe("202200000001");
 });
@@ -143,7 +139,7 @@ test("Deve fazer um pedido calculando a distancia e o frete", async function () 
 		],
 		zipCode: '88015600'
 	};
-	const checkout = new Checkout(new ProductDataFake(), new CouponDataFake(), new OrderDataFake());
+	const checkout = new Checkout(new ProductDataFake(), new CouponDataFake(), new OrderDataFake(), new ZipCodeDataFake());
 	const output: any = await checkout.execute(input);
 	expect(output.shipping.distance).toBe(748.2217780081631);
 });
